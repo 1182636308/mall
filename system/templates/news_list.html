@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}
+    <title>新闻列表</title>
+{% endblock %}
+
+{% block container %}
+    <!--主体-->
+    <header class="wy-header">
+      <div class="wy-header-icon-back"><span></span></div>
+      <div class="wy-header-title">新闻列表</div>
+    </header>
+    <div class="weui-content">
+      <div class="weui-cells wy-news-list">
+        {#  新闻列表循环展示  #}
+          {% for news in page_data.object_list %}
+        <a class="weui-cell weui-cell_access" href="{% url 'system:news_detail' news.pk %}">
+          <div class="weui-cell__bd">
+            <p>{{ news.title }}</p>
+          </div>
+          <div class="weui-cell__ft"></div>
+        </a>
+          {% endfor %}
+      </div>
+
+        <div class="weui-footer">
+            {# 列表的脚部，翻页功能 #}
+            <p class="weui-footer__links">
+                {% if page_data.has_previous %}
+                    <a href="{% url 'system:news_list' %}?page={{ page_data.previous_page_number }}" class="weui-footer__link">上一页</a>
+                {% endif %}
+                {% if page_data.has_next %}
+                    <a href="{% url 'system:news_list' %}?page={{ page_data.next_page_number }}" class="weui-footer__link">下一页</a>
+                {% endif %}
+            </p>
+            <p class="weui-footer__text">第{{ page_data.number }}页,共{{ page_data.paginator.num_pages }}页</p>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block footer %}
+    <script type="text/javascript" src="static/js/jquery.Spinner.js"></script>
+{% endblock %}

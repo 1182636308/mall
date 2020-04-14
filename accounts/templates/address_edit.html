@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% block title %}
+    <title>编辑地址</title>
+{% endblock %}
+
+{% block container %}
+    <!--主体-->
+    <header class="wy-header">
+      <div class="wy-header-icon-back"><span></span></div>
+      <div class="wy-header-title">编辑地址</div>
+    </header>
+    <form class="weui-content" action="." method="post">
+      <div class="weui-cells weui-cells_form wy-address-edit">
+        <div class="weui-cell">
+          <div class="weui-cell__hd">
+            <label class="weui-label wy-lab">收货人</label>
+          </div>
+          <div class="weui-cell__bd">
+            <input
+              class="weui-input"
+              type="text"
+              placeholder="请输入收货人姓名"
+              value="{{ form.obj.value|default_if_none:'' }}"
+              name="obj"
+            />
+          </div>
+        </div>
+        <div class="weui-cell">
+          <div class="weui-cell__hd">
+            <label class="weui-label wy-lab">手机号</label>
+          </div>
+          <div class="weui-cell__bd">
+            <input
+              class="weui-input"
+              type="text"
+              placeholder="请输入手机号码"
+              value="{{ form.phone.value|default_if_none:'' }}"
+              name="phone"
+            />
+          </div>
+        </div>
+        <div class="weui-cell">
+          <div class="weui-cell__hd">
+            <label for="name" class="weui-label wy-lab">所在地区</label>
+          </div>
+          <div class="weui-cell__bd">
+            <input
+              class="weui-input"
+              id="address"
+              type="text"
+              value="{{ form.region.value|default_if_none:'广东省 广州市 天河区' }}"
+              readonly=""
+              name="region"
+            />
+          </div>
+        </div>
+        <div class="weui-cell">
+          <div class="weui-cell__hd">
+            <label class="weui-label wy-lab">详细地址</label>
+          </div>
+          <div class="weui-cell__bd">
+              <input type="text"
+              class="weui-textarea"
+              placeholder="珠江新城珠江大厦8楼"
+              name="address"
+              value="{{ form.address.value|default_if_none:'' }}"
+           >
+          </div>
+        </div>
+        <div class="weui-cell weui-cell_switch">
+          <div class="weui-cell__bd">设为默认地址</div>
+          <div class="weui-cell__ft">
+              {{ form.is_default }}
+            {#  <input class="weui-switch" type="checkbox" />#}
+          </div>
+        </div>
+      </div>
+      <div class="weui-btn-area">
+
+          {#   错误信息展示     #}
+            {{ form.obj.errors }}
+            {{ form.phone.errors }}
+            {{ form.region.errors }}
+            {{ form.address.errors }}
+            {{ form.non_field_errors }}
+
+
+      <input type="submit" class="weui-btn weui-btn_primary" value="保存此地址">
+        {% if pk != 'add' %}
+             <a href="javascript:;" id="is_delete_addr" class="weui-btn weui-btn_warn">删除此地址</a>
+        {% endif %}
+
+      </div>
+    </form>
+{% endblock %}
+{% block footer %}
+    <script src="/static/js/city-picker.js"></script>
+    <script>
+      $('#address').cityPicker({
+        title: '选择出发地',
+        onChange: function(picker, values, displayValues) {
+          console.log(values, displayValues);
+        }
+      });
+      $('#is_delete_addr').click(function () {
+          if (window.confirm('确认是否删除')) {
+                $.post("{% url 'accounts:user_address_delete' form.instance.id|default_if_none:'0' %}",function (hrest) {
+                   if (hrest==='ok'){
+                       window.location.href="{% url 'accounts:user_address_list' %}";
+                   }
+                })
+          }
+      })
+
+    </script>
+{% endblock %}
+
+
+
+
